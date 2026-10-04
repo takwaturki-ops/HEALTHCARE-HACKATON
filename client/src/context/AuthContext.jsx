@@ -156,4 +156,4 @@ export function useAuth() {
     throw new Error('useAuth doit être utilisé à l\'intérieur de <AuthProvider>');
   }
   return context;
-}s
+}
