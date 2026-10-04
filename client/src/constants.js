@@ -10,4 +10,4 @@ export const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
 export const typeInfo = (t) => TYPES.find((x) => x.value === t) || { label: t, icon: '📦' }
 
 export const formatPrice = (p) =>
-  p == null ? 'Prix non précisé' : `${Number(p).toLocaleString('fr-FR')} TND`
+  p == null ? 'Prix non précisé' : `${Number(p).toLocaleString('fr-FR')} MAD`

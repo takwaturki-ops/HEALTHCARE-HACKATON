@@ -1,5 +1,4 @@
-//C’est le fichier qui contient les fonctions permettant de récupérer les besoins, les statistiques et les hôpitaux ; pour l’instant elles utilisent les données fictives de mocks.js, et quand le backend sera prêt, elles pourront automatiquement récupérer les vraies données via client.js
-
+// C'est le fichier qui contient les fonctions permettant de récupérer les besoins, les statistiques et les hôpitaux ; pour l'instant elles utilisent les données fictives de mocks.js, et quand le backend sera prêt, elles pourront automatiquement récupérer les vraies données via client.js
 
 import api from './client'
 import { needs, hospitals } from './mocks'
@@ -38,10 +37,43 @@ export async function getStats() {
     critical: open.filter((n) => n.urgency === 'CRITIQUE').length,
     byCity: count((n) => n.hospital.city).map(([city, count]) => ({ city, count })),
     byType: count((n) => n.type).map(([type, count]) => ({ type, count })),
+    byStatus: open.reduce((a, n) => { a[n.status] = (a[n.status] || 0) + 1; return a }, {}),
   })
 }
 
 export async function getHospitals() {
   if (!USE_MOCK) return (await api.get('/hospitals')).data
   return wait(hospitals)
+}
+
+// Mutations (pour Dashboard)
+export async function createNeed(data) {
+  if (!USE_MOCK) return (await api.post('/needs', data)).data
+  const newNeed = { ...data, id: Date.now(), status: 'OUVERT', createdAt: new Date().toISOString(), hospital: hospitals[0] }
+  needs.push(newNeed)
+  return wait(newNeed)
+}
+
+export async function updateNeed(id, data) {
+  if (!USE_MOCK) return (await api.patch(`/needs/${id}`, data)).data
+  const idx = needs.findIndex((n) => n.id === Number(id))
+  if (idx === -1) throw new Error('not found')
+  needs[idx] = { ...needs[idx], ...data }
+  return wait(needs[idx])
+}
+
+export async function deleteNeed(id) {
+  if (!USE_MOCK) return (await api.delete(`/needs/${id}`)).data
+  const idx = needs.findIndex((n) => n.id === Number(id))
+  if (idx === -1) throw new Error('not found')
+  needs.splice(idx, 1)
+  return wait({ success: true })
+}
+
+export async function updateNeedStatus(id, status) {
+  if (!USE_MOCK) return (await api.patch(`/needs/${id}/status`, { status })).data
+  const idx = needs.findIndex((n) => n.id === Number(id))
+  if (idx === -1) throw new Error('not found')
+  needs[idx] = { ...needs[idx], status }
+  return wait(needs[idx])
 }
