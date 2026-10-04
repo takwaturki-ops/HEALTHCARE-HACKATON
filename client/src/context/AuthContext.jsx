@@ -1,4 +1,4 @@
-/**
+/**CONTEXT : C'est le nom d'une fonctionnalité de React : React Context. Elle sert à partager une donnée avec toute l'appli sans la passer de composant en composant
  * ============================================================
  *  context/AuthContext.jsx : la "mémoire" de l'utilisateur connecté
  * ============================================================
