@@ -85,7 +85,6 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     if (!storedToken) {
-      setLoading(false);
       return;
     }
 
