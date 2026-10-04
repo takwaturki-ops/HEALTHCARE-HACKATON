@@ -39,4 +39,44 @@
 
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import
+import ProtectedRoute from './components/ProtectedRoute';
+import Login from './pages/Login';
+import RegisterHopital from './pages/RegisterHopital';
+
+// Page provisoire pour tester la connexion, en attendant DashboardHopital.jsx
+function DashboardPlaceholder() {
+  const { user, logout } = useAuth();
+
+  return (
+    <div style={{ padding: '2rem' }}>
+      <h1>Dashboard hôpital (provisoire)</h1>
+      <p>Connecté : {user?.nom || user?.email || 'utilisateur'}</p>
+      <button type="button" onClick={logout}>
+        Se déconnecter
+      </button>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register-hopital" element={<RegisterHopital />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPlaceholder />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
+  );
+}
